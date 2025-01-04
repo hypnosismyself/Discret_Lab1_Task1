@@ -10,10 +10,10 @@ void printHeader()
 }
 
 
-// целевое выражение - вариант 2
+// целевое выражение - вариант 7
 bool taskExpression(bool a, bool b, bool c, bool d, bool e) 
 {
-    return (!a && b) || c || (d && !e);
+    return (!a || b) && c && (d || !e);
 }
 
 // генератор СДНФ
