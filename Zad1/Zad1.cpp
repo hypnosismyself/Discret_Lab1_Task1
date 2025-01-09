@@ -1,7 +1,17 @@
 ﻿#include <iostream>
 #include <vector>
 
-// Целевое выражение - вариант 7
+/*
+ * Целевое выражение - вариант 7
+ * :params - значение логической переменной
+    bool a
+    bool b
+    bool c
+    bool d
+    bool e
+
+    :return int
+ */
 bool taskExpression(bool a, bool b, bool c, bool d, bool e) 
 {
     return (!a || b) && c && (d || !e);
@@ -14,6 +24,9 @@ void generateTruthTable()
     std::cout << "a\tb\tc\td\te\tF\n";
     std::cout << "-----------------------------------------\n";
 
+    // генерация таблицы через побитовое И
+    // если хотя бы в одном разряде 1, то значение равно 1
+    // иначе 0
     for (int i = 0; i < 32; ++i)
     {
         bool a = i & 16;
@@ -32,9 +45,10 @@ void generateTruthTable()
     }
 }
 
-// Генерация Совершенной Дизъюнктивной Нормальной Формы (СДНФ)
-void generatePureDisjunctiveForm() {
-    std::vector<std::string> terms;
+// Генератор Совершенной Дизъюнктивной Нормальной Формы (СДНФ)
+void generatePureDisjunctiveForm() 
+{
+    std::vector<std::string> result;
 
     for (int i = 0; i < 32; ++i)
     {
@@ -45,6 +59,7 @@ void generatePureDisjunctiveForm() {
         bool e = i & 1;
         bool func = taskExpression(a, b, c, d, e);
 
+        // формирование конъюнкций
         if (taskExpression(a, b, c, d, e)) {
             std::string term = "";
 
@@ -54,22 +69,26 @@ void generatePureDisjunctiveForm() {
             term += d ? "d" : "!d";
             term += e ? "e" : "!e";
 
-            terms.push_back("(" + term + ")");
+            result.push_back("(" + term + ")");
         }
     }
 
     std::cout << "\nСовершенная дизъюнктивная нормальная форма (СДНФ):\n";
 
-    for (const auto& term : terms) {
+    for (auto term : result)
+    {
         std::cout << term << " || ";
     }
 
     std::cout << "false\n";
 }
 
-// Генерация Совершенной Конъюнктивной Нормальной Формы (СКНФ)
-void generatePureConjunctiveForm() {
-    std::vector<std::string> clauses;
+// Генератор Совершенной Конъюнктивной Нормальной Формы (СКНФ)
+void generatePureConjunctiveForm() 
+{
+    // массив дизъюнкций
+    std::vector<std::string> result;
+
     for (int i = 0; i < 32; ++i)
     {
         bool a = i & 16;
@@ -79,31 +98,36 @@ void generatePureConjunctiveForm() {
         bool e = i & 1;
         bool func = taskExpression(a, b, c, d, e);
 
+        // формирование дизъюнкции для каждой строки таблицы истинности
         if (!taskExpression(a, b, c, d, e)) {
-            std::string clause = "";
+            std::string term = "";
 
-            clause += a ? "!a" : "a";
-            clause += b ? "!b" : "b";
-            clause += c ? "!c" : "c";
-            clause += d ? "!d" : "d";
-            clause += e ? "!e" : "e";
+            term += a ? "!a" : "a";
+            term += b ? "!b" : "b";
+            term += c ? "!c" : "c";
+            term += d ? "!d" : "d";
+            term += e ? "!e" : "e";
 
-            clauses.push_back("(" + clause + ")");
+            result.push_back("(" + term + ")");
         }
     }
 
     std::cout << "\nСовершенная конъюнктивная нормальная форма (СКНФ):\n";
 
-    for (const auto& clause : clauses) {
-        std::cout << clause << " * ";
+    for (auto term : result)
+    {
+        std::cout << term << " * ";
     }
 
     std::cout << "\n";
 }
 
-int main() {
+int main() 
+{
+    // русская локаль
     setlocale(LC_ALL, "Russian");
-
+    
+    // зовем методы по заданию
     generateTruthTable();
     generatePureDisjunctiveForm();
     generatePureConjunctiveForm();
