@@ -27,7 +27,7 @@ void generateTruthTable()
     // генерация таблицы через побитовое И
     // если хотя бы в одном разряде 1, то значение равно 1
     // иначе 0
-    for (int i = 0; i < 32; ++i)
+    for (int i = 0; i < 32; i++)
     {
         bool a = i & 16;
         bool b = i & 8;
@@ -48,9 +48,10 @@ void generateTruthTable()
 // Генератор Совершенной Дизъюнктивной Нормальной Формы (СДНФ)
 void generatePureDisjunctiveForm() 
 {
-    std::vector<std::string> result;
+    std::vector<std::string> temp;
+    std::string result;
 
-    for (int i = 0; i < 32; ++i)
+    for (int i = 0; i < 32; i++)
     {
         bool a = i & 16;
         bool b = i & 8;
@@ -60,7 +61,8 @@ void generatePureDisjunctiveForm()
         bool func = taskExpression(a, b, c, d, e);
 
         // формирование конъюнкций
-        if (taskExpression(a, b, c, d, e)) {
+        if (func)
+        {
             std::string term = "";
 
             term += a ? "a" : "!a";
@@ -69,27 +71,25 @@ void generatePureDisjunctiveForm()
             term += d ? "d" : "!d";
             term += e ? "e" : "!e";
 
-            result.push_back("(" + term + ")");
+            temp.push_back("(" + term + ")");
         }
     }
 
-    std::cout << "\nСовершенная дизъюнктивная нормальная форма (СДНФ):\n";
+    for (int i = 0; i < temp.size(); i++)
+        result += (i + 1 == temp.size()) ? temp[i] : temp[i] + " && ";
 
-    for (auto term : result)
-    {
-        std::cout << term << " || ";
-    }
-
-    std::cout << "false\n";
+    std::cout << "\nСовершенная дизъюнктивная нормальная форма (СДНФ):\n"
+              << result;
 }
 
 // Генератор Совершенной Конъюнктивной Нормальной Формы (СКНФ)
 void generatePureConjunctiveForm() 
 {
     // массив дизъюнкций
-    std::vector<std::string> result;
+    std::vector<std::string> temp;
+    std::string result;
 
-    for (int i = 0; i < 32; ++i)
+    for (int i = 0; i < 32; i++)
     {
         bool a = i & 16;
         bool b = i & 8;
@@ -99,27 +99,25 @@ void generatePureConjunctiveForm()
         bool func = taskExpression(a, b, c, d, e);
 
         // формирование дизъюнкции для каждой строки таблицы истинности
-        if (!taskExpression(a, b, c, d, e)) {
-            std::string term = "";
+        if (!func) 
+        {
+            std::string term_disjunctive = "";
 
-            term += a ? "!a" : "a";
-            term += b ? "!b" : "b";
-            term += c ? "!c" : "c";
-            term += d ? "!d" : "d";
-            term += e ? "!e" : "e";
+            term_disjunctive += a ? "!a" : "a";
+            term_disjunctive += b ? "!b" : "b";
+            term_disjunctive += c ? "!c" : "c";
+            term_disjunctive += d ? "!d" : "d";
+            term_disjunctive += e ? "!e" : "e";
 
-            result.push_back("(" + term + ")");
+            temp.push_back("(" + term_disjunctive + ")");
         }
     }
 
-    std::cout << "\nСовершенная конъюнктивная нормальная форма (СКНФ):\n";
+    for (int i = 0; i < temp.size(); i++)
+        result += (i + 1 == temp.size()) ? temp[i] : temp[i] + " || ";
 
-    for (auto term : result)
-    {
-        std::cout << term << " * ";
-    }
-
-    std::cout << "\n";
+    std::cout << "\nСовершенная конъюнктивная нормальная форма (СКНФ):\n"
+              << result;;
 }
 
 int main() 
